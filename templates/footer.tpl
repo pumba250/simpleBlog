@@ -16,6 +16,7 @@
             <input type="password" name="password" placeholder="Пароль" required>
             <button type="submit">Войти</button>
         </form></p>
+	<p><a href="?action=register">Регистрация</a></p>
     <?php endif; ?>
 	<p><a href="?">Главная</a></p>
 	<p><a href="?action=contact">Обратная связь</a></p>
