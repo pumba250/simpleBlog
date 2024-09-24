@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			mkdir('config', 0755, true);  // Создаём директорию с правами 0755
 		}
         // Создание файла конфигурации
-        file_put_contents('config/config3.php', "<?php\n\nreturn [\n  'host' => '$dbHost',\n  'database' => '$dbName',\n  'db_user' => '$dbUser',\n  'db_pass' => '$dbPass',\n];");
+        file_put_contents('config/config.php', "<?php\n\nreturn [\n  'host' => '$dbHost',\n  'database' => '$dbName',\n  'db_user' => '$dbUser',\n  'db_pass' => '$dbPass',\n];");
 
         echo "<p>Установка завершена успешно!<br>Не забудте удалить install.php и sql!
 		<a href='index.php'>Перейти</a></p>";
