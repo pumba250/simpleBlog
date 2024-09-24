@@ -7,10 +7,30 @@ class User {
     }
 
     public function register($username, $password, $email) {
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
-        return $stmt->execute([$username, $hash, $email]);
+    // Проверяем, есть ли уже пользователи в базе данных
+    $query = $this->pdo->query("SELECT COUNT(*) FROM users");
+    $userCount = $query->fetchColumn();
+
+    // Хеширование пароля
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    // Если это первый пользователь, устанавливаем права администратора
+    $isAdmin = ($userCount == 0) ? 9 : 0;
+
+    // Проверка уникальности имени пользователя и электронной почты
+    $stmtCheck = $this->pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ? OR email = ?");
+    $stmtCheck->execute([$username, $email]);
+    $exists = $stmtCheck->fetchColumn();
+
+    if ($exists) {
+        // Логика обработки ошибки: имя пользователя или email уже заняты
+        return false; // Можно выбросить исключение или вернуть ошибку
     }
+
+    // Подготовка и выполнение запроса на добавление пользователя
+    $stmt = $this->pdo->prepare("INSERT INTO users (username, password, email, isadmin) VALUES (?, ?, ?, ?)");
+    return $stmt->execute([$username, $hash, $email, $isAdmin]);
+}
 
 	public function login($username, $password) {
     $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ?");
