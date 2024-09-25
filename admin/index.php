@@ -61,10 +61,14 @@ if (isset($userData['isadmin']) && $userData['isadmin'] == 9) {
 
     echo renderTemplate($template, $templateVariables);
 } else {
-/*    // Отображение формы входа для администратора
-$referer = $_SERVER['HTTP_REFERER'];
-header('Location: '.$referer);
-die;*/
+// Отображение формы входа для администратора
+$template = 'login_form.tpl';
+$pageTitle = 'Вход в административную панель';
+// Передача данных для dashboard.tpl
+$templateVariables = [
+	'pageTitle' => $pageTitle,
+];
+echo renderTemplate($template, $templateVariables);
 }
 
 // Функция для отображения шаблона с данными
