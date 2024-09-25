@@ -20,7 +20,7 @@ body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         </div>
         <div class="w3-container">
             <p>    <form method="POST">
-        <input type="hidden" name="action" value="admin_login">
+        <input type="hidden" name="action" value="login">
         <input type="text" name="username" placeholder="Логин" required>
         <input type="password" name="password" placeholder="Пароль" required>
         <button type="submit">Войти</button>
