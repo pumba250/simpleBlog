@@ -23,7 +23,15 @@ $user = new User($pdo);
     $stmt->execute(['username' => $_SESSION['username']]);
     $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-//var_dump($userData);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Обработка авторизации
+if ($_POST['action'] === 'login') {
+    $userData = $user->login($_POST['username'], $_POST['password']);
+    if ($userData) {
+        $_SESSION['user'] = $userData;
+    }
+ }
+ }
 // Добавьте подгруппы для получения общего числа пользователей, новостей и обратной связи
 $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $totalNews = $pdo->query("SELECT COUNT(*) FROM blogs")->fetchColumn();
