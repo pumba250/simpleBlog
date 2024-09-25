@@ -35,20 +35,25 @@ if (isset($userData['isadmin']) && $userData['isadmin'] == 9) {
     switch ($view) {
         case 'manage_users':
             $template = 'manage_users.tpl';
+			$pageTitle = 'Управление пользователями';
             break;
         case 'manage_feedback':
             $template = 'manage_feedback.tpl';
+			$pageTitle = 'Обратная связь';
             break;
         case 'add_news':
             $template = 'add_news.tpl';
+			$pageTitle = 'Добавить пост';
             break;
         default:
             $template = 'dashboard.tpl';
+			$pageTitle = 'Статистика';
             break;
     }
 
     // Передача данных для dashboard.tpl
     $templateVariables = [
+		'pageTitle' => $pageTitle,
         'totalUsers' => $totalUsers,
         'totalNews' => $totalNews,
         'totalFeedback' => $totalFeedback,
