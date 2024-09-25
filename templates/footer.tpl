@@ -10,12 +10,34 @@
         <p>Привет, <?= htmlspecialchars($user['username']) ?>!<button type="submit" class="btn btn-primary">Выйти</button></form></p>
 		<?php if ($user['isadmin']=='9'): ?><p><a href="/admin/">Admin Panel</a></p><?php endif; ?>
     <?php else: ?>
-        <p><form method="POST">
-            <input type="hidden" name="action" value="login">
-            <input type="text" name="username" placeholder="Логин" required>
-            <input type="password" name="password" placeholder="Пароль" required>
-            <button type="submit">Войти</button>
-        </form></p>
+<p><button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-gray w3-large">Login</button>
+
+  <div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+  
+      <div class="w3-center"><br>
+        <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <img src="/images/avatar_g.png" alt="Avatar" style="width:30%" class="w3-circle w3-margin-top">
+      </div>
+      <form method="POST" class="w3-container">
+        <div class="w3-section">
+		<input type="hidden" name="action" value="login">
+          <label><b>Username</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" name="username" required>
+          <label><b>Password</b></label>
+          <input class="w3-input w3-border" type="password" placeholder="Enter Password" name="password" required>
+          <button class="w3-button w3-block w3-gray w3-section w3-padding" type="submit">Login</button>
+          <input class="w3-check w3-margin-top" type="checkbox" checked="checked"> Remember me
+        </div>
+      </form>
+
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button onclick="document.getElementById('id01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
+        <!--<span class="w3-right w3-padding w3-hide-small">Forgot <a href="#">password?</a></span>-->
+      </div>
+
+    </div>
+  </div></p>
 	<p><a href="?action=register">Регистрация</a></p>
     <?php endif; ?>
 	<p><a href="?">Главная</a></p>
