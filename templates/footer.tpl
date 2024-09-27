@@ -52,9 +52,9 @@
     <ul class="w3-ul w3-hoverable w3-white">
 <?php if ($lastThreeNews): ?>
     <?php foreach ($lastThreeNews as $newsItem): ?>
-      <li class="w3-padding-16">
+      <li class="w3-padding-16"><a class="" href="?id=<?= htmlspecialchars($newsItem['id']) ?>">
         <span class="w3-large"><?= htmlspecialchars($newsItem['title']) ?></span><br>
-        <span><?= $newsItem['created_at'] ?></span>
+        <span class="w3-tiny"><?= $newsItem['created_at'] ?></span></a>
       </li>
 	<?php endforeach; ?>
     <?php else: ?>
