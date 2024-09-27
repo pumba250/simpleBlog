@@ -75,7 +75,24 @@ try {
     $template->assign('user', $_SESSION['user'] ?? null);
 	$template->assign('news', $news);
     $template->assign('pageTitle', $pageTitle); // Передача заголовка в шаблон
-} else {
+} elseif (isset($_GET['tags'])) {
+        // Обработка тегов
+        $tag = htmlspecialchars($_GET['tags']); // Получаем тег и экранируем его
+        $pageTitle = "Новости по тегу: " . $tag; // Заголовок для страницы с новостями по тегу
+        // Получение новостей по тегу
+        $newsByTag = $news->getNewsByTag($tag);
+        // Получение последних 3 новостей
+        $lastThreeNews = $news->getLastThreeNews();
+        // Получение всех тегов
+        $stmt = $pdo->query("SELECT * FROM tags ORDER by `name`");
+        $allTags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Передача данных в шаблон
+        $template->assign('allTags', $allTags);
+        $template->assign('lastThreeNews', $lastThreeNews);
+        $template->assign('user', $_SESSION['user'] ?? null);
+        $template->assign('news', $newsByTag);
+        $template->assign('pageTitle', $pageTitle); // Передача заголовка в шаблон
+    } else {
     // Загрузка главной страницы
     $pageTitle = 'Главная страница'; // Заголовок для главной страницы
     // Настройка пагинации
