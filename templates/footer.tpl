@@ -72,7 +72,7 @@
             <p>
                 <?php if ($allTags): ?>
                     <?php foreach ($allTags as $tag): ?>
-                        <span class="w3-tag w3-light-grey w3-small w3-margin-bottom"><?= htmlspecialchars($tag['name']) ?></span>
+                        <span class="w3-tag w3-light-grey w3-small w3-margin-bottom"><a class="w3-button" href="?tags=<?= htmlspecialchars($tag['name']) ?>"><?= htmlspecialchars($tag['name']) ?></a></span>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <span class="w3-tag w3-light-grey w3-small w3-margin-bottom">Нет тегов</span>
