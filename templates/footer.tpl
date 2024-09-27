@@ -33,7 +33,7 @@
 
       <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
         <button onclick="document.getElementById('id01').style.display='none'" type="button" class="w3-button w3-red">Cancel</button>
-        <!--<span class="w3-right w3-padding w3-hide-small">Forgot <a href="#">password?</a></span>-->
+        <span class="w3-right w3-padding w3-hide-small"><a href="?action=register">Регистрация</a></span>
       </div>
 
     </div>
