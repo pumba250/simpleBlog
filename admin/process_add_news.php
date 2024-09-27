@@ -16,7 +16,7 @@ try {
 }
 
 
-if (!isset($_SESSION['admin_logged']) || $_SESSION['admin_logged'] !== true) {
+if (!isset($_SESSION['user']['isadmin']) || $_SESSION['user']['isadmin'] !== 9) {
     header('Location: index.php');
     exit();
 }
