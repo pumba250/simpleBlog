@@ -4,7 +4,7 @@
   <!-- About Card -->
   <div class="w3-card w3-margin w3-margin-top">
   <?php if ($user): ?><img src="<?= htmlspecialchars($user['avatar']);?>" style="width:120px"><?php endif; ?>
-    <div class="w3-container w3-white">
+    <div class="w3-container w3-white"><?php flash(); ?>
       <?php if ($user): ?>
 	  <p><form class="mt-5" method="post" action="/admin/do_logout.php"></p>
         <p>Привет, <?= htmlspecialchars($user['username']) ?>!<button type="submit" class="btn btn-primary">Выйти</button></form></p>
