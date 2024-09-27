@@ -25,6 +25,9 @@ public function getAllNews($limit, $offset) {
 		// Простой алгоритм генерации тегов (можно усовершенствовать)
 		$tags = [];
 		
+		// Массив стоп-слов
+		$stopWords = ['и', 'в', 'на', 'с', 'по', 'к', 'из', 'для', 'это', 'что', 'как']; // Добавьте дополнительные
+
 		// Удаляем HTML-теги и приводим к нижнему регистру
 		$title = strip_tags($title);
 		$content = strip_tags($content);
@@ -38,12 +41,15 @@ public function getAllNews($limit, $offset) {
 		
 		foreach ($words as $word) {
 			$word = strtolower(trim($word));
-			if (strlen($word) > 5 && !in_array($word, $tags)) { // Фильтр по длине слова и уникальности
+			
+			// Пропускаем короткие слова и стоп-слова
+			if (strlen($word) > 5 && !in_array($word, $tags) && !in_array($word, $stopWords)) {
 				$tags[] = $word;
 			}
 		}
 
-		return $tags;
+		// Ограничиваем количество тегов (например, до 10)
+		return array_slice($tags, 0, 10);
 	}
 	public function getNewsWithTags() {
     $stmt = $this->pdo->query("
@@ -113,6 +119,29 @@ public function getTagsByNewsId($newsId) {
     ");
     $stmt->execute([$newsId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function getNewsByTag($tag) {
+    // Сначала получаем ID тега по имени
+    $stmt = $this->pdo->prepare("SELECT id FROM tags WHERE name = ?");
+    $stmt->execute([$tag]);
+    $tagId = $stmt->fetchColumn();
+    // Если тег не найден, возвращаем пустой массив
+    if (!$tagId) {
+        return [];
+    }
+
+    // Теперь получаем все новости, связанные с этим тегом
+    $stmt = $this->pdo->prepare("
+        SELECT b.*
+        FROM blogs b
+        JOIN blogs_tags bt ON b.id = bt.blogs_id
+        WHERE bt.tag_id = ?
+    ");
+    $stmt->execute([$tagId]);
+
+         $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+         return $news;
 }
 
 }
