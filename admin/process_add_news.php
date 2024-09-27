@@ -16,7 +16,9 @@ try {
 }
 
 
-if (!isset($_SESSION['user']['isadmin']) || $_SESSION['user']['isadmin'] !== 9) {
+if (!isset($_SESSION['isadmin']) || $_SESSION['user']['isadmin'] !== '9') {
+	//echo "Доступ запрещен. Вы не являетесь администратором.";
+	//var_dump($_SESSION);
     header('Location: index.php');
     exit();
 }
