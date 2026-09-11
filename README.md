@@ -61,6 +61,49 @@ SimpleBlog распространяется под лицензией MIT. По�
 
 Все заметные изменения в этой проекте будут документированы в этом файле.
 
+## [1.0.1] - 2026-09-11
+
+### Исправлено
+
+#### Совместимость с PHP 8.1+
+- **ErrorHandler**: `E_WARNING`, `E_NOTICE`, `E_DEPRECATED` больше не превращаются в `ErrorException` — логируются в `logs/errors.log`, но не роняют сайт. Это возвращает поведение PHP 7.4 и позволяет чинить остальные Warning'и постепенно.
+- **ErrorHandler**: добавлен метод `logWarning()` для раздельного логирования некритичных ошибок.
+- **Template**: компилятор шаблонов `{$var.prop}` и `{$var['key']}` теперь использует `?? ''` — защита от `Undefined array key` и `Attempt to read property on null`.
+- **Template**: в `__construct()` добавлены `global $config, $news` — устранена ошибка `Undefined variable $config`.
+- **User**: инициализация `$_SESSION['login_attempts']` и `$_SESSION['last_attempt']` вынесена из условия `if (session_status() == PHP_SESSION_NONE)` — теперь выполняется всегда, даже если сессия уже запущена.
+- **Pagination**: изменён порядок параметров на `calculate(int $totalItems, string $type, array $config, int $currentPage = 1)` — устранён deprecated-порядок (обязательный параметр после необязательного).
+
+#### Инициализация приложения
+- **index.php**: `$config = require 'config/config.php'` перенесён **до** `session_start()` — теперь настройки сессии (`cookie_lifetime`, `gc_maxlifetime`, `cookie_secure`) применяются корректно.
+- **index.php**: `ini_set('session.*')` вызывается **до** `session_start()` — устранены Warning'и `Session ini settings cannot be changed when a session is active`.
+- **index.php**: `session_regenerate_id(true)` вызывается **до** любого вывода — устранён Warning `Session ID cannot be regenerated after headers have already been sent`.
+- **index.php**: все вызовы `Pagination::calculate()` приведены к новому порядку аргументов.
+- **index.php**: `new parse()` → `new Parse()`, `new imageUploader()` → `new ImageUploader()` — исправлен регистр имён классов.
+- **index.php**: добавлен `$pdo->exec("SET NAMES utf8mb4")` — корректная работа с UTF-8.
+
+#### Шаблоны
+- **footer.tpl**: удалён `{!$pagination}` из первой строки — устранена ошибка `Undefined variable $pagination` на страницах `contact`, `login`, `register`, `profile`.
+
+### Известные проблемы (в работе)
+
+- **profile.tpl**: переменные `$userNewsCount` и `$userCommentsCount` не передаются из `index.php` — страница `?action=profile` может отдавать HTTP 500.
+- **footer.tpl / userSection**: форма выхода (`logout`) не содержит `csrf_token` — при попытке выхода возникает ошибка `invalid_csrf`.
+- **admin/index.tpl**: `$_GET['action']` используется без `?? ''` — возможна ошибка `Undefined array key "action"`.
+- **Core.php**: `handleProfileUpdate()` передаёт аргументы в `User::updateProfile()` в неверном порядке.
+- **User.php**: `updateUser()` использует `$config` без `global $config`.
+- **Template.php**: `{$var}` и `{!$var}` для простых переменных всё ещё без `?? ''`.
+
+### Изменено
+
+- Минимальная версия PHP: **8.1** (было 7.4).
+- Политика обработки ошибок: некритичные Warning'и логируются, но не прерывают выполнение.
+
+### Технические детали
+
+- Все правки направлены на совместимость с PHP 8.1+.
+- Сохранена обратная совместимость с существующими шаблонами и БД.
+- 
+
 ## [1.0.0] - 2025-12-17
 1. Архитектурные улучшения
 Консолидация логики: Вся обработка POST-запросов (включая админку) вынесена в класс Core
