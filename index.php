@@ -25,6 +25,13 @@ header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 $start = microtime(1);
+$config = require 'config/config.php';
+
+if (isset($config['session_lifetime'])) {
+    ini_set('session.gc_maxlifetime', $config['session_lifetime']);
+    ini_set('session.cookie_lifetime', $config['session_lifetime']);
+}
+
 session_start([
     'cookie_secure' => ($config['force_https'] ?? false) ? true : false,
     'cookie_httponly' => true,
@@ -36,11 +43,6 @@ session_start([
     'sid_length' => 128,
     'sid_bits_per_character' => 6 
 ]);
-
-if (isset($config['session_lifetime'])) {
-    ini_set('session.gc_maxlifetime', $config['session_lifetime']);
-    ini_set('session.cookie_lifetime', $config['session_lifetime']);
-}
 
 $regenerateTime = 300;
 if (!isset($_SESSION['created'])) {
@@ -54,7 +56,6 @@ if (!file_exists('config/config.php')) {
 	header('Location: install.php');
 	die;
 }
-$config = require 'config/config.php';
 require 'class/ErrorHandler.php';;
 ErrorHandler::init($config['debug'] ?? false);
 require 'class/Lang.php';
@@ -97,6 +98,7 @@ $db_user = $config['db_user'];
 $db_pass = $config['db_pass'];
 $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $db_user, $db_pass);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo->exec("SET NAMES utf8mb4");
 $templ = $config['templ'];
 $dbPrefix = $config['db_prefix'];
 $backupDir = $config['backup_dir'];
@@ -128,7 +130,7 @@ $news = new News($pdo);
 $comments = new Comments($pdo);
 $parse = new parse();
 $template = new Template();
-$imageUploader = new imageUploader($uploadDir, $maxSize);
+$imageUploader = new imageUploader($config['upload_dir'], $config['maxSize']);
 $user = new User($pdo, $template);
 $baseTitle = $config['home_title'];
 $pageTitle = $baseTitle;
@@ -190,8 +192,8 @@ if (!isset($_GET['action'])) {
 		$pagination = Pagination::calculate(
 			$totalComments,
 			Pagination::TYPE_COMMENTS,
-			$currentCommentPage,
-			$config
+			$config,
+			$currentCommentPage
 		);
 		$commentsList = $comments->getComments(
 			$newsId,
@@ -251,8 +253,9 @@ if (!isset($_GET['action'])) {
 		$pagination = Pagination::calculate(
 			$countNewsByTags, 
 			Pagination::TYPE_NEWS, 
-			$page, 
-			$config
+			$config,
+			$page
+			
 		);
 		$newsByTags = $news->getNewsByTag($tag, $pagination['per_page'], $pagination['offset']);
 		foreach ($newsByTags as &$item) {
@@ -306,8 +309,8 @@ if (!isset($_GET['action'])) {
 		$pagination = Pagination::calculate(
 			$totalNewsCount, 
 			Pagination::TYPE_NEWS, 
-			$page, 
-			$config
+			$config,
+			$page
 		);
 		$allNews = $news->getAllNewsCached(
 			$pagination['per_page'], 
@@ -444,8 +447,8 @@ if (!isset($_GET['action'])) {
 						$pagination = Pagination::calculate(
 							$totalResults, 
 							Pagination::TYPE_NEWS, 
-							$page, 
-							$config
+							$config,
+							$page
 						);
 						$searchResults = $news->searchNews($searchQuery, $pagination['per_page'], $pagination['offset']);
 
