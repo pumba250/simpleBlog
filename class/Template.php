@@ -39,7 +39,7 @@ class Template
 
     public function __construct()
     {
-        global $templ;
+        global $templ, $config, $news;
         $this->config = $config;
         $this->news = $news;
         $this->templateDir = "templates/{$templ}";

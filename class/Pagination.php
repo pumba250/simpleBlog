@@ -26,7 +26,7 @@ class Pagination
      * @param int $currentPage Текущая страница
      * @return array Массив с данными пагинации
      */
-    public static function calculate(int $totalItems, string $type, int $currentPage = 1, array $config): array
+    public static function calculate(int $totalItems, string $type, array $config, int $currentPage = 1): array
     {
         // Определяем количество элементов на странице из конфига
         switch ($type) {

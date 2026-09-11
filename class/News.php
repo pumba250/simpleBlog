@@ -77,7 +77,7 @@ class News
     public function getAllNews($limit, $offset)
     {
         $stmt = $this->pdo->prepare(
-            "SELECT id, title, LEFT(content, 320) AS content, created_at as date 
+            "SELECT id, title, SUBSTR(content, 1, 330) AS content, created_at as date 
             FROM {$this->dbPrefix}blogs 
             ORDER BY created_at DESC 
             LIMIT :limit OFFSET :offset"
@@ -93,7 +93,7 @@ class News
         try {
             $searchQuery = '%' . $query . '%';
             $stmt = $this->pdo->prepare("
-                SELECT id, title, LEFT(content, 320) AS content, created_at 
+                SELECT id, title, SUBSTR(content, 1, 330) AS content, created_at 
                 FROM {$this->dbPrefix}blogs 
                 WHERE title LIKE :query OR content LIKE :query
                 ORDER BY created_at DESC

@@ -41,16 +41,19 @@ class User
     }
 
     private function startSession()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-            // Initialize rate limiting if not set
-            if (!isset($_SESSION['login_attempts'])) {
-                $_SESSION['login_attempts'] = 0;
-                $_SESSION['last_attempt'] = 0;
-            }
-        }
+{
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
     }
+
+    // Инициализация ВСЕГДА, независимо от того, кто запустил сессию
+    if (!isset($_SESSION['login_attempts'])) {
+        $_SESSION['login_attempts'] = 0;
+    }
+    if (!isset($_SESSION['last_attempt'])) {
+        $_SESSION['last_attempt'] = 0;
+    }
+}
 
     public function getAllUsers()
     {

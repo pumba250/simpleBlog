@@ -42,16 +42,45 @@ class ErrorHandler
     }
 
     public static function handleError(int $errno, string $errstr, string $errfile, int $errline)
-    {
-        if (!(error_reporting() & $errno)) {
-            return false;
-        }
-
-        $exception = new ErrorException($errstr, 0, $errno, $errfile, $errline);
-        self::handleException($exception);
-
-        return true;
+{
+    // Если ошибка подавлена через @ — не трогаем
+    if (!(error_reporting() & $errno)) {
+        return false;
     }
+
+    // E_WARNING, E_NOTICE, E_DEPRECATED — только в лог, не фатал
+    if (in_array($errno, [
+        E_WARNING, E_NOTICE, E_DEPRECATED,
+        E_USER_WARNING, E_USER_NOTICE, E_USER_DEPRECATED,
+    ], true)) {
+        self::logWarning($errno, $errstr, $errfile, $errline);
+        return true; // подавляем стандартный обработчик
+    }
+
+    // E_ERROR, E_USER_ERROR и т.п. — фатал
+    $exception = new ErrorException($errstr, 0, $errno, $errfile, $errline);
+    self::handleException($exception);
+
+    return true;
+}
+
+private static function logWarning(int $errno, string $errstr, string $errfile, int $errline): void
+{
+    if (!file_exists(dirname(self::$logFile))) {
+        mkdir(dirname(self::$logFile), 0755, true);
+    }
+
+    $message = sprintf(
+        "[%s] [PHP %d] %s in %s:%d\n",
+        date('Y-m-d H:i:s'),
+        $errno,
+        $errstr,
+        $errfile,
+        $errline
+    );
+
+    file_put_contents(self::$logFile, $message, FILE_APPEND);
+}
 
     public static function handleShutdown()
     {
