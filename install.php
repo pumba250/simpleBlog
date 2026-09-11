@@ -15,8 +15,8 @@
  */
 
 // Check PHP version
-if (version_compare(PHP_VERSION, '7.3.0', '<')) {
-    die('Требуется PHP версии 7.3 или выше.');
+if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+    die('Требуется PHP версии 8.1 или выше.');
 }
 
 // Secure session settings
@@ -214,7 +214,7 @@ return [
     'blogs_per_page' => 6,
     'comments_per_page' => 10,
     'powered' => 'simpleBlogCMS',
-    'version' => 'v1.0.0',
+    'version' => 'v1.0.1',
 	'pretty_urls' => false,
 	'github_repo' => 'pumba250/simpleBlogCMS',
 	'update_check_interval' => 86400, // 24 часов в секундах
